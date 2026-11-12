@@ -1,0 +1,22 @@
+{
+  "name": "chronos-singularity",
+  "version": "1.0.0",
+  "description": "Real-time WebGL2 relativistic black hole, gravitational lensing, and spacetime observatory",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "build:single": "vite build --mode singlefile",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0",
+    "vite-plugin-singlefile": "^2.2.0",
+    "vitest": "^3.0.9"
+  }
+}

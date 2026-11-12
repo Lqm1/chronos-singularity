@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHRONOS // SINGULARITY — 相対論的ブラックホール観測所</title>
+  </head>
+  <body>
+    <canvas id="singularity-canvas" aria-label="Interactive relativistic black hole simulation"></canvas>
+
+    <div id="hud-root" class="hud-root">
+      <!-- Top-Left Observatory Header & Live Relativistic Telemetry -->
+      <header class="hud-panel hud-brand" aria-label="Observatory telemetry">
+        <div class="brand-badge">
+          <span class="pulse-dot"></span>
+          <span class="mono-label">RELATIVISTIC GEODESIC ENGINE · WEBGL2 HDR</span>
+        </div>
+        <h1 class="brand-title">CHRONOS <span class="slash">//</span> SINGULARITY</h1>
+        <p id="preset-subtitle" class="brand-subtitle">黄金の事象の地平面 — 重力レンズ＆降着円盤シミュレータ</p>
+
+        <div class="telemetry-grid" aria-live="off">
+          <div class="tele-item">
+            <span class="tele-label">質量 MASS</span>
+            <span id="tele-mass" class="tele-value">100.0M M☉</span>
+          </div>
+          <div class="tele-item">
+            <span class="tele-label">観測距離 DIST</span>
+            <span id="tele-dist" class="tele-value">10.60 Rs</span>
+          </div>
+          <div class="tele-item">
+            <span class="tele-label">時間遅れ τ/t</span>
+            <span id="tele-dilation" class="tele-value">0.9517</span>
+          </div>
+          <div class="tele-item">
+            <span class="tele-label">脱出速度 v/c</span>
+            <span id="tele-escape" class="tele-value">0.307 c</span>
+          </div>
+          <div class="tele-item">
+            <span class="tele-label">光子の影 SHADOW</span>
+            <span id="tele-shadow" class="tele-value">2.598 Rs</span>
+          </div>
+          <div class="tele-item">
+            <span class="tele-label">描画 FPS</span>
+            <span id="tele-fps" class="tele-value">60 FPS</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Top-Right Action Bar -->
+      <nav class="hud-actions" aria-label="Simulation tools">
+        <button id="btn-launch-star" class="action-btn accent-btn" type="button" title="恒星を重力圏へ投入 (Space / Shift+Click)">
+          <span class="btn-icon">✦</span>
+          <span>恒星を投入</span>
+        </button>
+        <button id="btn-grid" class="action-btn" type="button" aria-pressed="false" title="3D時空湾曲グリッド切替 [G]">
+          <span class="btn-icon">⌗</span>
+          <span>時空グリッド</span>
+        </button>
+        <button id="btn-audio" class="action-btn" type="button" aria-pressed="false" title="宇宙音響シンセ切替 [A]">
+          <span class="btn-icon">♫</span>
+          <span>宇宙音響</span>
+        </button>
+        <button id="btn-auto-orbit" class="action-btn is-active" type="button" aria-pressed="true" title="自動周回カメラ切替 [R]">
+          <span class="btn-icon">◎</span>
+          <span>自動周回</span>
+        </button>
+        <button id="btn-snapshot" class="action-btn" type="button" title="高精細PNGスナップショット保存 [P]">
+          <span class="btn-icon">◉</span>
+          <span>撮影</span>
+        </button>
+        <button id="btn-controls-toggle" class="action-btn" type="button" aria-expanded="false" title="物理パラメータ調整パネル [S]">
+          <span class="btn-icon">⚙</span>
+          <span>パラメータ</span>
+        </button>
+        <button id="btn-cinema" class="action-btn icon-only" type="button" title="HUD非表示 / シネマモード [H]">
+          <span>✕</span>
+        </button>
+      </nav>
+
+      <!-- Right Collapsible Physics & Visual Controls Drawer -->
+      <aside id="controls-drawer" class="hud-panel controls-drawer" aria-label="Physics parameters" aria-hidden="true">
+        <div class="drawer-header">
+          <div>
+            <div class="mono-label">SPACETIME PARAMETERS</div>
+            <h2 class="drawer-title">時空・物理パラメータ</h2>
+          </div>
+          <button id="btn-reset-params" class="mini-btn" type="button">初期化</button>
+        </div>
+
+        <div class="drawer-section">
+          <div class="mode-switch-row">
+            <span class="control-label">クリック操作モード</span>
+            <div class="segmented" role="group" aria-label="Click mode">
+              <button id="mode-orbit" class="seg-btn is-active" type="button">視点回転</button>
+              <button id="mode-launch" class="seg-btn" type="button">恒星発射</button>
+            </div>
+          </div>
+
+          <div class="mode-switch-row">
+            <span class="control-label">描画品質</span>
+            <div class="segmented" role="group" aria-label="Quality preset">
+              <button data-quality="auto" class="seg-btn is-active" type="button">自動</button>
+              <button data-quality="ultra" class="seg-btn" type="button">Ultra</button>
+              <button data-quality="high" class="seg-btn" type="button">High</button>
+              <button data-quality="balanced" class="seg-btn" type="button">軽量</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="slider-list" class="slider-list"></div>
+
+        <div class="drawer-footer">
+          <div class="stat-pill">吸収された恒星: <strong id="stat-absorbed">0</strong></div>
+          <button id="btn-clear-stars" class="mini-btn" type="button">軌道を消去</button>
+        </div>
+      </aside>
+
+      <!-- Bottom Dock: Presets & Gesture Hint -->
+      <footer class="hud-bottom">
+        <div id="preset-bar" class="hud-panel preset-bar" role="tablist" aria-label="Astrophysical presets"></div>
+        <div class="hint-pill">
+          ドラッグで周回 · ホイールで接近 · <kbd>Shift</kbd>+クリック / <kbd>Space</kbd> で恒星投入 · <kbd>H</kbd> シネマモード
+        </div>
+      </footer>
+    </div>
+
+    <button id="btn-restore-hud" class="restore-hud-btn" type="button" hidden>
+      HUDを表示 [H]
+    </button>
+
+    <div id="toast-banner" class="toast-banner" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
